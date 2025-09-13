@@ -1,0 +1,13 @@
+{% extends 'layouts/basic.html' %}
+
+{% block title %}Профиль посетителя{% endblock %}
+
+{% block content %}
+<h2>Объявления посетителя
+{% if user.first_name and user.last_name %}
+{{ user.first_name }} {{ user.last_name }}
+{% else %}
+{{ user.username }}
+{% endif %}
+</h2>
+{% endblock %}
