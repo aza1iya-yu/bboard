@@ -1,0 +1,65 @@
+{% load django_bootstrap5 static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Главная{% endblock %} - Доска объявлений</title>
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'main/styles.css' %}" />
+    {% bootstrap_javascript %}
+  </head>
+  <body class="container-fluid">
+    <header class="mb-4">
+      <h1 class="display-1 text-center">Объявления</h1>
+    </header>
+    <nav class="row navbar navbar-expand-md bg-light">
+      <div class="col container">
+        <a href="{% url 'main:index' %}" class="navbar-brand text-primary">Главная</a>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" class="navbar-toggler">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <div class="navbar-nav">
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Профиль</a>
+              <div class="dropdown-menu dropdown-menu-end">
+                <a href="#" class="dropdown-item">Мои объявления</a>
+                <a href="#" class="dropdown-item">Изменить личные данные</a>
+                <a href="#" class="dropdown-item">Изменить пароль</a>
+                <hr class="dropdown-divider"/>
+                <form class="px-3" method="post" action="#">
+                  {% csrf_token %}
+                  {% bootstrap_button 'Выйти' button_class='btn-danger' %}
+                </form>
+                <hr class="dropdown-divider" />
+                <a href="#" class="dropdown-item">Удалить</a>
+              </div>
+            </div>
+            <a href="#" class="nav-link">Регистрация</a>
+            <a href="#" class="nav-link">Вход</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="row">
+      <nav class="col-md-auto nav flex-column bg-light">
+        <span class="nav-link text-dark fs-5">Недвижимость</span>
+        <a href="#" class="nav-link ps-4">Жилье</a>
+        <a href="#" class="nav-link ps-4">Склады</a>
+        <a href="#" class="nav-link ps-4">Гаражи</a>
+        <span class="nav-link text-dark fs-5" href="#">Транспорт</span>
+        <a href="#" class="nav-link ps-4">Легковой</a>
+        <a href="#" class="nav-link ps-4">Грузовой</a>
+        <a href="{% url 'main:other' page='about' %}" class="nav-link fs-5">О сайте</a>
+      </nav>
+      <main class="col py-2">
+        {% bootstrap_messages %} {% block content %} {% endblock %}
+      </main>
+    </div>
+    <footer class="mt-3">
+      <p class="text-end fst-italic">&copy; читатели.</p>
+    </footer>
+  </body>
+</html>
