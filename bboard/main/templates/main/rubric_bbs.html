@@ -2,8 +2,17 @@
 
 {% load thumbnail static django_bootstrap5 %}
 
+{% block title %}{{ rubric }}{% endblock %}
+
 {% block content %}
-<h2>Последние 10 объявлений</h2>
+<h2 class="mb-2">{{ rubric }}</h2>
+<form class="row row-cols-md-auto justify-content-end">
+  {% bootstrap_field form.keyword show_label=False wrapper_class='col-12' %}
+  <div class="col-12">
+    {% bootstrap_button 'Поиск' %}
+  </div>
+</form>
+{% if bbs %}
 <section class="vstack gap-3 my-4">
   {% for bb in bbs %}
   <article class="card">
@@ -26,4 +35,6 @@
   </article>
   {% endfor %}
 </section>
+{% bootstrap_pagination page url=keyword %}
+{% endif %}
 {% endblock %}
