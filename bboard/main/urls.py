@@ -12,6 +12,7 @@ from .views import (
     RegisterDoneView,
     user_activate,
     ProfileDeleteView,
+    rubric_bbs,
 )
 
 app_name = "main"
@@ -27,6 +28,7 @@ urlpatterns = [
     path("accounts/profile/edit/", ProfileEditView.as_view(), name="profile_edit"),
     path("accounts/profile/", profile, name="profile"),
     path("accounts/login/", BBLoginView.as_view(), name="login"),
+    path("<int:pk>/", rubric_bbs, name="rubric_bbs"),
     path("<str:page>/", other_page, name="other"),
     path("", index, name="index"),
 ]
