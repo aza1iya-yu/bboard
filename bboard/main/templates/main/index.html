@@ -7,7 +7,7 @@
 <section class="vstack gap-3 my-4">
   {% for bb in bbs %}
   <article class="card">
-    {% url 'main:bb_detail' rubric_pk=rubric.pk pk=bb.pk as url %}
+    {% url 'main:bb_detail' rubric_pk=bb.rubric.pk pk=bb.pk as url %}
     <div class="row p-3">
       <a href="{{ url }}{{ all }}" class="col-md-2">
         {% if bb.image %}

@@ -18,7 +18,7 @@ from .views import (
     BBPasswordResetView,
     BBPasswordResetConfirmView,
     bb_detail,
-    profile_bb_detail,
+    # profile_bb_detail,
 )
 
 app_name = "main"
@@ -40,7 +40,7 @@ urlpatterns = [
         "accounts/profile/delete/", ProfileDeleteView.as_view(), name="profile_delete"
     ),
     path("accounts/profile/edit/", ProfileEditView.as_view(), name="profile_edit"),
-    path("accounts/profile/<int:pk>/", profile_bb_detail, name="profile_bb_detail"),
+    # path("accounts/profile/<int:pk>/", profile_bb_detail, name="profile_bb_detail"),
     path("accounts/profile/", profile, name="profile"),
     path("accounts/login/", BBLoginView.as_view(), name="login"),
     path("<int:rubric_pk>/<int:pk>/", bb_detail, name="bb_detail"),
