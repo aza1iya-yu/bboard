@@ -6,19 +6,20 @@
 
 {% block content %}
 <h2>Объявления посетителя
-{% if user.first_name and user.last_name %}
-{{ user.first_name }} {{ user.last_name }}
-{% else %}
-{{ user.username }}
-{% endif %}
+  {% if user.first_name and user.last_name %}
+  {{ user.first_name }} {{ user.last_name }}
+  {% else %}
+  {{ user.username }}
+  {% endif %}
 </h2>
+<p><a href="{% url 'main:profile_bb_add' %}">Добавить объявление</a></p>
 {% if bbs %}
 <section class="vstack gap-3 my-4">
   {% for bb in bbs %}
   <article class="card">
-    {% url 'main:bb_detail' rubric_pk=bb.rubric.pk pk=bb.pk as url %}
+    {% url 'main:profile_bb_detail' pk=bb.pk as url %}
     <div class="row p-3">
-      <a href="{{ url }}{{ all }}" class="col-md-2">
+      <a href="{{ url }}" class="col-md-2">
         {% if bb.image %}
         <img src="{% thumbnail bb.image 'default' %}" class="img-fluid">
         {% else %}
@@ -26,10 +27,14 @@
         {% endif %}
       </a>
       <div class="col-md-10 card-body">
-        <h3 class="card-title"><a href="{{ url }}{{ all }}">{{ bb.title }}</a></h3>
+        <h3 class="card-title"><a href="{{ url }}">{{ bb.title }}</a></h3>
         <div class="card-text mb-2">{{ bb.content }}</div>
         <p class="card-text fw-bold">{{ bb.price }} руб.</p>
         <p class="card-text text-end fst-italic">{{ bb.created_at }}</p>
+        <p class="card-text end-text">
+          <a href="{% url 'main:profile_bb_edit' pk=bb.pk %}">Исправить</a>
+          <a href="{% url 'main:profile_bb_delete' pk=bb.pk %}">Удалить</a>
+        </p>
       </div>
     </div>
   </article>

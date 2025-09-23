@@ -1,0 +1,28 @@
+{% extends 'layouts/basic.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}Удаление объявления - Профиль посетителя{% endblock %}
+
+{% block content %}
+<h2>Удаление объявления</h2>
+<section class="row mt-3">
+    {% if bb.image %}
+    <div class="col-md-auto">
+        <img src="{{ bb.image.url }}" class="main-image">
+    </div>
+    {% endif %}
+    <div class="col">
+        <h2>{{ bb.title }}</h2>
+        <p>{{ bb.content }}</p>
+        <p class="fw-bold">{{ bb.price }}</p>
+        <p>{{ bb.contacts }}</p>
+        <p class="text-end fst-italic">Добавлено {{ bb.created_at }}</p>
+    </div>
+</section>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_button 'Удалить' button_class='btn-danger' %}
+</form>
+<p><a href="{% url 'main:profile' %}">Назад</a></p>
+{% endblock %}
