@@ -23,9 +23,17 @@ from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from .models import AdvUser, SubRubric, Bb
-from .forms import ProfileEditForm, RegisterForm, SearchForm, BbForm, AIFormSet
-from .signals import post_register
+from .models import AdvUser, SubRubric, Bb, Comment
+from .forms import (
+    ProfileEditForm,
+    RegisterForm,
+    SearchForm,
+    BbForm,
+    AIFormSet,
+    UserCommentForm,
+    GuestCommentForm,
+)
+from .signals import post_register, comment_saved
 from .utilities import signer
 
 
@@ -168,17 +176,59 @@ def rubric_bbs(request, pk):
 
 
 def bb_detail(request, rubric_pk, pk):
-    bb = get_object_or_404(Bb, pk=pk)
+    bb = Bb.objects.get(pk=pk)
+    initial = {"bb": bb.pk}
+    if request.user.is_authenticated:
+        initial["author"] = request.user.username
+        form_class = UserCommentForm
+    else:
+        form_class = GuestCommentForm
+
+    form = form_class(initial=initial)
+
+    if request.method == "POST":
+        c_form = form_class(request.POST)
+        if c_form.is_valid():
+            comment = c_form.save()
+            comment_saved.send(bb_detail, request=request, comment=comment)
+            messages.add_message(request, messages.SUCCESS, "Комментарий добавлен")
+            return redirect(request.get_full_path_info())
+        else:
+            form = c_form
+            messages.add_message(request, messages.WARNING, "Комментарий не добавлен")
+
     ais = bb.additionalimage_set.all()
-    context = {"bb": bb, "ais": ais}
+    comments = Comment.objects.filter(bb=pk, is_active=True)
+    context = {"bb": bb, "ais": ais, "comments": comments, "form": form}
     return render(request, "main/bb_detail.html", context)
 
 
 @login_required
 def profile_bb_detail(request, pk):
-    bb = get_object_or_404(Bb, pk=pk)
+    bb = Bb.objects.get(pk=pk)
+    initial = {"bb": bb.pk}
+    if request.user.is_authenticated:
+        initial["author"] = request.user.username
+        form_class = UserCommentForm
+    else:
+        form_class = GuestCommentForm
+
+    form = form_class(initial=initial)
+
+    if request.method == "POST":
+        c_form = form_class(request.POST)
+        if c_form.is_valid():
+            comment = c_form.save()
+            comment_saved.send(bb_detail, request=request, comment=comment)
+            messages.add_message(request, messages.SUCCESS, "Комментарий добавлен")
+            return redirect(request.get_full_path_info())
+        else:
+            form = c_form
+            messages.add_message(request, messages.WARNING, "Комментарий не добавлен")
+
     ais = bb.additionalimage_set.all()
-    context = {"bb": bb, "ais": ais}
+    comments = Comment.objects.filter(bb=pk, is_active=True)
+    context = {"bb": bb, "ais": ais, "comments": comments, "form": form}
     return render(request, "main/profile_bb_detail.html", context)
 
 

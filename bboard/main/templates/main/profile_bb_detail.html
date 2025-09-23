@@ -1,5 +1,7 @@
 {% extends 'layouts/basic.html' %}
 
+{% load django_bootstrap5 %}
+
 {% block title %}{{ bb.title }} - {{ bb.rubric.name }} - Объявления посетителя{% endblock %}
 
 {% block content %}
@@ -27,4 +29,22 @@
 </section>
 {% endif %}
 <p><a href="{% url 'main:profile' %}">Назад</a></p>
+<h4 class="mt-5">Новый комментарий</h4>
+<form method="post">
+  {% csrf_token %}
+  {% bootstrap_form form layout='horizontal' %}
+  {% bootstrap_button 'Добавить' %}
+</form>
+{% if comments %}
+<h4 class="mt-5">Комментарии</h4>
+<section class="vstack gap-3 mt-5">
+  {% for comment in comments %}
+  <article class="p-2 border">
+    <h5>{{ comment.author }}</h5>
+    <p>{{ comment.content }}</p>
+    <p class="text-end fst-italic">{{ comment.created_at }}</p>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
 {% endblock %}
