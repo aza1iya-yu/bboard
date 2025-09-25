@@ -1,0 +1,16 @@
+article {
+  margin: 10px 0px;
+  padding: 0px 10px;
+  border: grey thin solid;
+}
+
+article p.price {
+  font-size: larger;
+  font-weight: bold;
+  text-align: right;
+}
+
+article p.date {
+  font-style: italic;
+  text-align: right;
+}

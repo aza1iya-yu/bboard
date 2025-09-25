@@ -1,0 +1,1 @@
+export const domain: string = 'http://localhost:8000/api/';
