@@ -1,0 +1,65 @@
+services:
+  database:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: bboard
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d bboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+
+  backend:
+    build: ./bboard
+    environment:
+      PG_NAME: bboard
+      PG_USER: admin
+      PG_PASSWORD: admin 
+      PG_HOST: database
+      PG_PORT: 5432
+      DJANGO_SUPERUSER_USERNAME: admin
+      DJANGO_SUPERUSER_PASSWORD: admin
+      DJANGO_SUPERUSER_EMAIL: admin@admin.com
+    ports:
+      - 8000:8000
+    depends_on:
+      database:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        until python manage.py check --database default 2>/dev/null; do
+          echo 'Database not ready, waiting...' &&
+          sleep 5
+        done &&
+        python manage.py migrate &&
+        echo 'Creating superuser...' &&
+        python manage.py createsuperuser --noinput --username $$DJANGO_SUPERUSER_USERNAME --email $$DJANGO_SUPERUSER_EMAIL || 
+        echo 'Superuser already exists' &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - ./bboard:/app
+
+
+  frontend:
+    build: ./bbclient
+    depends_on:
+      database:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    ports: 
+      - "4200:4200"
+    volumes:
+      - ./bbclient/src:/app/src
+    command: npm start -- --host 0.0.0.0 --port 4200
+
+volumes:
+  postgres_data:
